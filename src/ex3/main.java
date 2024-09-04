@@ -15,7 +15,7 @@ import java.util.Collections;
 public class main {
 	
 	static void achavalores(Document  xmlfaturamento) {
-	    NodeList diario = xmlfaturamento.getElementsByTagName("dia");
+	    NodeList diario = xmlfaturamento.getElementsByTagName("row");
 	    List<Double> lista = new ArrayList<>();
 	    
 	    //preenche list lista com os valores do xml
@@ -23,25 +23,31 @@ public class main {
             Node diaNode = diario.item(i);
             if (diaNode.getNodeType() == Node.ELEMENT_NODE) {
                 Element diaElement = (Element) diaNode;
-                double valor = Double.parseDouble(diaElement.getElementsByTagName("valor").item(0).getTextContent());
-                //ignora feriados
-                if (valor > 0) {
-                	lista.add(valor);
+                if(diaElement.getElementsByTagName("valor").item(0) != null) {
+	                double valor = Double.parseDouble(diaElement.getElementsByTagName("valor").item(0).getTextContent());
+	                //ignora feriados
+	                if (valor > 0) {
+	                	lista.add(valor);
+	                }
                 }
             }
         }
         
         //collections ordena a lista
-        Collections.sort(lista);
-        System.out.println("Maior faturamento do dia "+ lista.get(lista.size() - 1));
-        System.out.println("Menor faturamento do dia " + lista.get(0));
+        if(!lista.isEmpty()) {
+	        Collections.sort(lista);
+	        System.out.println("Maior faturamento do dia "+ lista.get(lista.size() - 1));
+	        System.out.println("Menor faturamento do dia " + lista.get(0));
+        } else {
+            System.out.println("Faturamento nulo");
+        }
         return;
 	}
 	
 	public static void main(String[] args){
 		try {
 			//mudar caminho para endereço apropriado
-			File arquivo = new File("C:\\Users\\Rafae\\eclipse-workspace\\Target\\src\\ex3\\faturamento_mensal.xml");
+			File arquivo = new File("C:\\Users\\Rafae\\eclipse-workspace\\Target\\src\\ex3\\dados.xml");
 			DocumentBuilderFactory Factory = DocumentBuilderFactory.newInstance();
 		    DocumentBuilder builder = Factory.newDocumentBuilder();
 		    Document  xmlfaturamento= builder.parse(arquivo);
